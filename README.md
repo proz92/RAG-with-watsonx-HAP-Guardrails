@@ -84,6 +84,7 @@ Check out the provided Python [notebook](news-of-the-day.ipynb) that outlines a 
 ![The notebook cell that gathers links from the web site.](./images/fig1.png)
 
 2. **Ingesting Individual Articles**: Once the links are obtained, the notebook uses `UnstructuredURLLoader` to fetch and preprocess individual news articles. This step involves loading content from the web, extracting relevant text and metadata using the `unstructured` library.
+![The notebook cell that injests the documents from the web site.](./images/fig2.png)
 
 3. **Generating Embeddings for Articles**: Before loading the articles into a database, embeddings are generated for each article. Embeddings are numerical representations of text that capture semantic meaning, allowing for better understanding by machine learning models. In this notebook, sentence embeddings are generated using IBM `sentence-transformers` model.
 
