@@ -81,6 +81,7 @@ The environment should automatically be selected, to check the selection:
 Check out the provided Python [notebook](news-of-the-day.ipynb) that outlines a workflow for gathering news articles from CNN Lite, summarizing them using various natural language processing tools and models, and then generating responses to user queries based on the summarized content. Let's break down the key steps outlined in the notebook:
 
 1. **Gathering Links from CNN Lite**: The notebook starts by retrieving links to articles from the CNN Lite homepage using the `partition_html` function from the `unstructured` library. This function parses HTML pages and extracts links easily.
+![The notebook cell that gathers links from the web site.](./images/fig1.png)
 
 2. **Ingesting Individual Articles**: Once the links are obtained, the notebook uses `UnstructuredURLLoader` to fetch and preprocess individual news articles. This step involves loading content from the web, extracting relevant text and metadata using the `unstructured` library.
 
