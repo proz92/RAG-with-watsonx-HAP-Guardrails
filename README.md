@@ -1,8 +1,8 @@
 ![The banner reproducing a technological skyline of a futuristic business distric governed by Artificial Intelligence](./images/pb67-Banner.png)
 
-# Streamlining RAG (Retrieval-Augmented Generation) System Implementation with Watsonx Services
+# Building RAG Systems with Watsonx for Streamlined News Summarization
 
-For years, websites like CNN Lite and other feed-based services (e.g., RSS feeds) have been popular playgrounds for showcasing technologies related to application integration and data extraction. News services, in particular, with their consistent flow of well-structured information, have proven to be valuable resources for demonstrating these capabilities. With the advent of Generative AI, the story takes a new turn. We're no longer just focused on data extraction and maybe visualization on mobile applications in a more or less formatted fashion; we're looking to leverage extracted information to generate insights and informative summaries. This article showcases how Watsonx services can seamlessly integrate with data available on various sites or feeds to extract information and utilize it within a **Retrieval-Augmented Generation (RAG)** system.
+For years, websites like CNN Lite and other feed-based services (e.g., RSS feeds) have been popular playgrounds for showcasing technologies related to application integration and data extraction. News services, in particular, with their consistent flow of well-structured information, have proven to be valuable resources for demonstrating these capabilities. With the advent of Generative AI, the story takes a new turn. We're no longer just focused on data extraction and maybe visualization on mobile applications in a more or less formatted fashion; we're looking to leverage extracted information to generate insights and informative summaries. This article showcases how Watsonx services can seamlessly integrate with data available on various sites or feeds to extract information and utilize it within a **Retrieval-Augmented Generation (RAG)** system. RAG systems have applications in various domains, such as customer service chatbots, information retrieval systems, and more.
 
 # What is RAG?
 
@@ -12,6 +12,10 @@ RAG is a technique that combines information retrieval with large language model
 - Known sources for output checking
 - A way for reverting to a candid "I don't know" answer instead of making it up
 
+Imagine you're writing a report on the history of flight. An information retrieval system would be like a giant library that can find relevant books and articles on the topic. However, this library wouldn't necessarily tell you what's important or how to synthesize the information.
+
+Here's where LLMs come in. They're like powerful language assistants that can process and understand information from those retrieved sources. RAG combines these two approaches. The retrieval system finds relevant documents, and the LLM uses those documents to generate informative and well-structured text, such as a concise summary of the history of flight for your report. By combining retrieval and generation, RAG systems can deliver more accurate and insightful responses.
+
 # RAG System Challenges
 
 Building a RAG system often involves a complex workflow with multiple tools and services. At its heart we can identify three basic steps:
@@ -19,9 +23,13 @@ Building a RAG system often involves a complex workflow with multiple tools and 
 2. Pull the most relevant content into your model prompt as context
 3. Send the combined prompt text to the model to generate output
 Extracting information from unstructured data, vectorizing documents for efficient searching, and leveraging large language models (LLMs) for summarization can be time-consuming and require expertise in different technologies.
-Similarly the three components of RAG systems can be dentified in the following.
+These three components can be further identified as:
 ## Knowledge Base
-The data and information used to feed the RAG system can take many forms and come from different sources, mainly in an unstructured fashion. Think about a collection of different artifacts such as: html documents from web sites, internal wiki pages, GitHub repositories, PDF files, product documentaion, collaboration tool messages, customer support tickets and many more.
+The data and information used to feed the RAG system can take many forms and come from different sources, mainly in an unstructured fashion. Think about a collection of different artifacts such as: html documents from web sites, internal wiki pages, GitHub repositories, PDF files, product documentaion, collaboration tool messages, customer support tickets and many more. While this variety offers a wealth of potential information, managing unstructured data presents several challenges:
+* **Data Variability:** Unstructured data lacks a standardized format, making it difficult to store, search, and analyze efficiently. Traditional relational databases designed for structured data struggle to handle this variety.
+* **Information Extraction:** Extracting relevant and usable information from unstructured sources can be complex. Techniques like natural language processing (NLP) are often required to parse text and identify key data points.
+* **Data Quality and Consistency:** Unstructured data can be prone to errors, inconsistencies, and missing information. Ensuring the quality and reliability of the data requires careful cleaning and pre-processing steps.
+* **Scalability:** As the volume of unstructured data grows, managing and storing it can become a significant challenge. Efficient storage solutions and scalable processing techniques are necessary.
 ## Retriever
 The retriever system could be any system component whose reposnibility is to return relevant content from one or more knowledge bases by leveraging the provided input prompt. Among those we find search tools like **IBM Watson Discovery** or vector darabases like **Milvus** or **ChromaDb** coupled with embeddings generation models.  
 ## Generator
