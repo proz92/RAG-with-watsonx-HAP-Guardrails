@@ -97,3 +97,11 @@ Check out the provided Python [notebook](news-of-the-day.ipynb) that outlines a 
 7. **Generating Response**: Finally, the notebook sets up a summarization chain and invokes it with the compressed documents and a prompt. The generated response is then printed, providing an answer to the user query based on the summarized content.
 
 Overall, this notebook demonstrates how various natural language processing techniques and models can be integrated to create a robust pipeline for retrieving, summarizing, and responding to news articles based on user queries.
+
+## Utils
+N.B. In order to run this notebook you need to set 3 environment variables, related to your watsonx.ai instance:
+- <b>WATSONX_URL</b>: it is a URL with this format "https://{region}.ml.cloud.ibm.com"
+- <b>WATSONX_API_KEY</b>: API KEY from your IBM Cloud account. A detailed procedure on how to create an API KEY can be found in the link provided at the end of this cell.
+- <b>PRJ_ID</b>: it is the ID of the project created on watsonx.ai platform to run this notebook
+
+Information on how to find/create these variables can be found here: https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-credentials.html?context=wx&audience=wdp.
