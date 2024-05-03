@@ -53,7 +53,7 @@ By utilizing these services within a single platform, watsonx.ai simplifies the 
 Explore watsonx documentation and resources to delve deeper into each service's functionalities and discover how they can further enhance your RAG system development.
 
 ## Provision a watsonx environment in IBM Cloud
-Head to your IBM Cloud account to create a watsonx.ai servoce instance and associate it wit a MAchine Learning service. You'll need to retrieve the following:
+Head to your IBM Cloud account to create a watsonx.ai servoce instance and associate it wit a Machine Learning service. You'll need to retrieve the following:
 - watsonx url
 - watsonx api key
 - project id
