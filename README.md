@@ -87,12 +87,15 @@ Check out the provided Python [notebook](news-of-the-day.ipynb) that outlines a 
 ![The notebook cell that injests the documents from the web site.](./images/fig2.png)
 
 3. **Generating Embeddings for Articles**: Before loading the articles into a database, embeddings are generated for each article. Embeddings are numerical representations of text that capture semantic meaning, allowing for better understanding by machine learning models. In this notebook, sentence embeddings are generated using IBM `sentence-transformers` model.
+![The notebook cell that creates embeddings from the documents.](./images/fig3.png)
 
 4. **Loading Documents into ChromaDB**: The preprocessed articles, along with their embeddings, are loaded into ChromaDB, a database optimized for similarity searches. This step involves leveraging the Chroma integration within the `langchain` library.
+![The notebook cell that stores documents in the vector db.](./images/fig4.png)
 
 5. **User Query and Similarity Search**: The notebook prompts the user to input a question. It then performs a similarity search on the loaded documents in ChromaDB to retrieve relevant articles based on the user's query. This search is based on the similarity of article embeddings to the query.
 
 6. **Compression and Summarization**: After retrieving relevant documents, the notebook compresses and summarizes them using the `ContextualCompressionRetriever` and `load_summarization_chain` functions. This step involves leveraging models such as IBM Granite within the Langchain framework to generate concise summaries related to the user's query.
+![The notebook cells that extract and compress responses.](./images/fig6.png)
 
 7. **Generating Response**: Finally, the notebook sets up a summarization chain and invokes it with the compressed documents and a prompt. The generated response is then printed, providing an answer to the user query based on the summarized content.
 
