@@ -98,6 +98,7 @@ Check out the provided Python [notebook](news-of-the-day.ipynb) that outlines a 
 ![The notebook cells that extract and compress responses.](./images/fig6.png)
 
 7. **Generating Response**: Finally, the notebook sets up a summarization chain and invokes it with the compressed documents and a prompt. The generated response is then printed, providing an answer to the user query based on the summarized content.
+![The notebook cells tgenerates the response.](./images/fig7.png)
 
 Overall, this notebook demonstrates how various natural language processing techniques and models can be integrated to create a robust pipeline for retrieving, summarizing, and responding to news articles based on user queries.
 
