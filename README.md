@@ -45,7 +45,7 @@ Once we have identified the chuncks on text containing HAP language, we can fina
 
 ![Fig.4 - Transform the harmful content while maintaining information](./images/fig4.png)
 
-Once we have defined the helper functions, the original notebook is only updated with one line of code in order to pre-process the documents before being inserted into ChromaDB and while the rest of the code will perform the same operations as in the original work:
+Once we have defined the helper functions, the original notebook is only updated with one line of code in order to pre-process the documents before being inserted into ChromaDB while the rest of the code will perform the same operations as in the original work:
 
 ![Fig.5 - HAP filtering function call](./images/fig5.png)
 
