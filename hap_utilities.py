@@ -178,7 +178,9 @@ def clean_hap_content(docs: list[Document], credentials: Credentials, project_id
         # -----------------------   GRANITE   ------------------------
         # Build the prompt and ensure that the revised sentences no longer have harmful or offensive language but retain the original meaning or intention in a more respectful and appropriate way.
         for i in range(len(matching_indices)):
-            prompt_granite = """Rewrite the following sentence to remove any harmful, abusive, or inappropriate content while maintaining the original meaning where possible. Ensure the revised sentence is respectful, neutral, and appropriate for all audiences. The output should contain only the revised sentence itself, without any additional words, explanations, or punctuation marks.
+            prompt_granite = """Rewrite the following sentence to remove any harmful, abusive, or inappropriate content while maintaining the original meaning where possible.
+            Ensure the revised sentence is respectful, neutral, and appropriate for all audiences. The output should contain only the revised sentence itself, without any additional words,
+            explanations, or punctuation marks.
 
 Input: That was a stupid decision and you’re an idiot for making it.
 Output: That was a decision that didn’t work out as planned.
