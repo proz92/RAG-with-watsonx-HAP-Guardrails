@@ -1,106 +1,54 @@
-![The banner reproducing a technological skyline of a futuristic business district governed by Artificial Intelligence](./images/pb67-Banner.png)
+![An allegorical filter for HAP content](./images/cover.png)
 
-# Building RAG Systems with Watsonx for Streamlined News Summarization
+# Enanching RAG systems with HAP language filtering
 
-For years, websites like CNN Lite and other feed-based services (e.g., RSS feeds) have been popular playgrounds for showcasing technologies related to application integration and data extraction. News services, in particular, with their consistent flow of well-structured information, have proven to be valuable resources for demonstrating these capabilities. With the advent of Generative AI, the story takes a new turn. We're no longer just focused on data extraction and maybe visualization on mobile applications in a more or less formatted fashion; we're looking to leverage extracted information to generate insights and informative summaries. This article showcases how watsonx services can seamlessly integrate with data available on various sites or feeds to extract information and utilize it within a **Retrieval-Augmented Generation (RAG)** system. RAG systems have applications in various domains, such as customer service chatbots, information retrieval systems, and more.
+The integration of a Hate, Abuse, and Profanity (HAP) language filters within Retrieval-Augmented Generation (RAG) systems is critical for ensuring the ethical and responsible use of large language models (LLMs).
+Indeed, Large Language Models (LLMs) are central to many modern Natural Language Processing (NLP) tasks, but their reliance on vast amounts of data from the web poses a significant risk of generating harmful content. As highlighted by Christoph Tillmann and colleagues (reference), LLMs, including widely-used models like RoBERTa, can inadvertently produce hate, abuse, and profanity (HAP) content due to being trained on datasets that may contain offensive material​. In this context, the authors suggest different approaches to avoid such behaviors focusing on HAP filtering during models' training and alignment, in order to assure that an LLM does not rely on such language when producing content; furthermore, they also provide indication on how to deal with HAP filtering 
+However, considering Retrieval-Augmented Generation (RAG) systems, where LLMs generate responses based on large document repositories, the risk of producing HAP content in response to a user query can also emerge from the presence of HAP language in the RAG system's knowledge base.
 
-# What is RAG?
+Hence, when it comes to filtering HAP content in the context of a RAG system, we can identify two primary approaches:
 
-RAG is a technique that combines information retrieval with large language models (LLMs) to generate informative and grounded responses. Retrieval-based models excel at finding relevant information from vast data sources, while LLMs are adept at processing and summarizing that information in human-like language. By combining these approaches, RAG systems can deliver accurate and insightful responses. The technique significantly elevates level of trust for enterprise applications by providing to the model:
-- Current and reliable information
-- Business related context
-- Known sources for output checking
-- A way for reverting to a candid "I don't know" answer instead of making it up
+- Filtering the documents that are ingested into the RAG system, ensuring the knowledge base remains free of HAP language (pre-processing approach).
+- Filtering the model’s output to sanitize responses, reducing the risk of harmful content being generated (post-processing approach).
 
-Imagine you're writing a report on the history of flight. An information retrieval system would be like a giant library that can find relevant books and articles on the topic. However, this library wouldn't necessarily tell you what's important or how to synthesize the information.
+Each method has its own benefits and challenges. Filtering documents during ingestion ensures that harmful content is never introduced into the knowledge base, preventing the possibility of such content being retrieved or surfaced in the model’s output. On the other hand, filtering the output of the LLM can be useful in cases where harmful language is inadvertently generated or inferred based on user queries, but this approach does not preclude the system from retrieving or working with problematic content behind the scenes.
 
-Here's where LLMs come in. They're like powerful language assistants that can process and understand information from those retrieved sources. RAG combines these two approaches. The retrieval system finds relevant documents, and the LLM uses those documents to generate informative and well-structured text, such as a concise summary of the history of flight for your report. By combining retrieval and generation, RAG systems can deliver more accurate and insightful responses.
+However, most existing HAP filters focus on removing harmful content entirely, which poses its own challenges. By stripping away HAP content, valuable information or context, which may be crucial in sensitive domains such as law enforcement or social work, could be lost. For instance, an important document discussing hate speech could be discarded entirely, despite having substantial insights.
 
-# RAG System Challenges
+In this article, we will show how to easily implement a pipeline that identifies HAP language within documents intended for ingestion (pre-processing approach) and, rather than discarding these sections, pass the flagged content to an LLM, which will rephrase the HAP elements into a more appropriate form while preserving the original meaning and context. The cleaned documents can then be ingested into the RAG system, ensuring both the integrity of the knowledge base and the ethical use of language. This approach not only safeguards the user experience but also maximizes the amount of usable, meaningful content available to the system.
 
-Building a RAG system often involves a complex workflow with multiple tools and services. At its heart we can identify three basic steps:
-1. Search for relevant content in your knowledge base
-2. Pull the most relevant content into your model prompt as context
-3. Send the combined prompt text to the model to generate output
+An high level overview of the pipeline described in this article is provided by the following diagram:
 
-Extracting information from unstructured data, vectorizing documents for efficient searching, and leveraging large language models (LLMs) for summarization can be time-consuming and require expertise in different technologies.
+![Pipeline diagram](./images/diagram.png)
 
-These three components can be further identified as:
-## 1 - Knowledge Base
-The data and information used to feed the RAG system can take many forms and come from different sources, mainly in an unstructured fashion. Think about a collection of different artifacts such as: HTML documents from websites, internal wiki pages, GitHub repositories, PDF files, product documentation, collaboration tool messages, customer support tickets and many more. While this variety offers a wealth of potential information, managing unstructured data presents several challenges:
-* **Data Variability:** unstructured data lacks a standardized format, making it difficult to store, search, and analyze efficiently. Traditional relational databases designed for structured data struggle to handle this variety.
-* **Information Extraction:** extracting relevant and usable information from unstructured sources can be complex. Techniques like natural language processing (NLP) are often required to parse text and identify key data points.
-* **Data Quality and Consistency:** unstructured data can be prone to errors, inconsistencies, and missing information. Ensuring the quality and reliability of the data requires careful cleaning and pre-processing steps.
-* **Scalability:** as the volume of unstructured data grows, managing and storing it can become a significant challenge. Efficient storage solutions and scalable processing techniques are necessary.
-## 2 - Retriever
-The retriever system could be any system component whose responsibility is to return relevant content from one or more knowledge bases by leveraging the provided input prompt. Among those we find search tools like **IBM Watson Discovery** or vector databases like **Milvus** or **ChromaDB** coupled with embeddings generation models.  
-## 3 - Generator
-This is the LLM of your choice based on the use case, the prompt strategy and the content parsed. Watsonx.ai provides different LLMs to experiment with together with clear model information for each one of them.
+In doing so, we expand our [preavious work](https://github.com/matteorinalduzzi/RAG-with-watsonx) on how to build a RAG system leveraging IBM Granite Guardian, a highly effective classifier for identifying hate, abuse, and profanity (HAP) content [recently open-sourced by IBM Research](https://research.ibm.com/blog/efficient-llm-hap-detector), for classifing HAP content within the knowledge base. Trained on large-scale datasets, IBM Granite Guardian boasts a lightweight model with only 38 million parameters, allowing it to deliver accurate HAP detection for the english language with lower computational requirements. Its streamlined performance ensures quick and reliable identification of harmful content, making it an ideal tool for real-time applications in content moderation, while maintaining the scalability needed for large RAG systems. 
 
-# Implementing RAG on watsonx leveraging unstructured.io
+# Identify HAP content in the knowledge base using IBM Granite Guardian and transform it using IBM Granite-13B-instruct in watsonx.ai
 
-Watsonx provides a unified platform that streamlines RAG systems implementation process. The platform offers a suite of services that can be seamlessly integrated into your notebook, simplifying development and deployment.
-Extracting valuable insights from data is crucial for effective RAG systems. However, a staggering 80% of enterprise data exists in difficult-to-use formats like HTML, PDF, CSV, PNG, PPTX, and more. This unstructured data often holds valuable information, but its complexity can hinder traditional processing methods. Unstructured.io libraries tackle this challenge head-on. Those libraries help effortlessly extract and transform complex data from these diverse formats, making it readily usable with every major vector database and LLM framework. This seamless integration empowers RAG systems to leverage the full potential of your data, regardless of its format.
-The included Python notebook demonstrates how to create a RAG system for news article summarization, leveraging unstructured.io libraries for document ingestion and watsonx.ai for text generation. Here's a breakdown of the key components utilized:
-- **UnstructuredURLLoader:** As mentioned earlier, Unstructured extracts valuable information from unstructured sources like the CNN Lite website. This service fetches and preprocesses individual news articles, enriching the data for further processing.
-- **ChromaDB:** A vector database that vectorizes documents, enabling efficient similarity searches. ChromaDB can be fed with custom embedding functions.
-- **Watsonx embeddings ([Slate model](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-slate-30m-english-rtrvr-model-card.html?context=wx)):** We use watsonx.ai embedding service, represented by IBM Slate “sentence transformers” models. Slate models have the same architecture as a small-RoBERTa base transformer model (6 layers) and are available in 2 versions: the smaller one with ~30 million parameters and an embedding dimension of 384 and the larger one with ~125 million parameters and an embedding dimension of 768. The underlying model architecture has been fine-tuned for retrieval-based tasks.
-- **Watsonx LLM ([Granite model](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-ibm-chat.html?context=wx&audience=wdp)):** Finally, the notebook taps into the power of IBM's Granite LLM for summarization. Watsonx LLM capabilities provide access to powerful and curated LLMs like Granite, enabling effective summarization and information extraction.
-By utilizing these services within a single platform, watsonx.ai simplifies the RAG system development process. The provided Python notebook demonstrates a streamlined workflow for summarizing news articles, highlighting the power of watsonx for efficient data extraction, management, and summarization.
+In order to introduce the pre-processing needed for the implementation of the HAP filter, as well as the IBM Granite Guardian model itself, with minimal modifications to our previous notebook, we define some helper functions provided in the hap_utilities.py file.
 
-![A diagram explaining the operations in the Jupyter notebook. A vector DB uses the question, documents extracted from the website and an embeddings model to produce a set of query docs that are passed to the LLM along with a prompt in order to receive an answer](./images/diagram.png)
+In particular we define some basic pre-processing functions in order to handle our chuncks of text while passing it to a filter, transform it when appropriate and re-build the documents with the transformed chunks of text (i.e. split_text_preserve_newlines, rebuild_text_with_newlines and find_substring_indices). Last but not least, we introduce a new function (i.e. clean_hap_content) that combines such new functions to performs a series of steps in order to clean out the HAP content from our documents.
 
-# Next Steps
+First, the function processes the documents in order to create chuncks that can be evaluated by the HAP classifier:
 
-Explore watsonx documentation and resources to delve deeper into the capabilities of each service and discover how they can further enhance your RAG system development.
+![Fig.1 - Split documents in chunks](./images/fig1.png)
 
-## Provision a watsonx environment in IBM Cloud
-Head to your IBM Cloud account to create a watsonx.ai service instance and associate it wit a Machine Learning service. Then, you'll need to retrieve the following:
-- watsonx url: a URL with the following format "https://{region}.ml.cloud.ibm.com"
-- watsonx api key: API KEY from your IBM Cloud account. A detailed procedure on how to create an API KEY can be found [here](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-credentials.html?context=wx&audience=wdp).
-- project id: the ID of the project created on watsonx.ai platform to run this notebook
+Then the function loads the IBM Granite Guardian 38M model, which can be easily pulled from [its HuggingFace Repository](https://huggingface.co/ibm-granite/granite-guardian-hap-38m).
 
-These variables must be set as python environment variables in order to be read by the notebook. In VSCode you can create a .env file such as:
-```
-# Environment variables for accessing watsonx
+![Fig.2 - Load IBM Granite Guardian](./images/fig2.png)
 
-WATSONX_URL='https://us-south.ml.cloud.ibm.com'
-WATSONX_API_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxx'
-PRJ_ID='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-```
+The model take strings of text as input and compute the probability that the processed text may contain HAP language: in its basic settings, if the probability associated to a string is higher than 0.5, the string is classified as 1 (indicating that it may contain HAP language), otherwise it is classified as 0 (i.e. no HAP content detected). For the sake of our analysis, we decide to select only the chuncks of text presenting a probability higher than 0.9 but the code can be easily adapted in order to select the preferred treshold for the specific use case:
 
-## Create a virtual environment in Visual Studio Code
-To create a virtual environment within vscode, open the project folder in Visual Studio Code and then:
-- Open `Command Palette` (⇧⌘P on Mac or Ctrl+Shift+P on Windows)
-- Type `Python: Create Environment` and press enter
-- Select `Venv` and point to requirements.txt file within this project
+![Fig.3 - Classify HAP content with IBM Granite Guardian](./images/fig3.png)
 
-The environment should automatically be selected, to check the selection:
-- Open`Command Palette`
-- Type `Python: Select Interpreter` and press enter
-- Select the virtual environment
+Once we have identified the chuncks on text containing HAP language, we can finally pass these chuncks to the IBM Granite 13 Billions Instruct foundational model in watsonx.ai, which will transform such chuncks rephrasing the harmful content using the following prompt:
 
-## Run the notebook
-Check out the provided Python [notebook](news-of-the-day.ipynb) that outlines a workflow for gathering news articles from CNN Lite, summarizing them using various natural language processing tools and models, and then generating responses to user queries based on the summarized content. Let's break down the key steps outlined in the notebook:
+![Fig.4 - Transform the harmful content while maintaining information](./images/fig4.png)
 
-1. **Gathering Links from CNN Lite**: The notebook starts by retrieving links to articles from the CNN Lite homepage using the `partition_html` function from the `unstructured` library. This function parses HTML pages and extracts links easily.
-![The notebook cell that gathers links from the website.](./images/fig1.png)
+Once we have defined the helper functions, the original notebook is only updated with one line of code in order to pre-process the documents before being inserted into ChromaDB and while the rest of the code will perform the same operations as in the original work:
 
-2. **Ingesting Individual Articles**: Once the links are obtained, the notebook uses `UnstructuredURLLoader` to fetch and preprocess individual news articles. This step involves loading content from the web, extracting relevant text and metadata using the `unstructured` library.
-![The notebook cell that ingests the documents from the website.](./images/fig2.png)
+![Fig.5 - HAP filtering function call](./images/fig5.png)
 
-3. **Generating Embeddings for Articles**: Before loading the articles into a database, embeddings are generated for each article. Embeddings are numerical representations of text that capture semantic meaning, allowing for better understanding by machine learning models. In this notebook, sentence embeddings are generated using IBM `sentence-transformers` model.
-![The notebook cell that creates embeddings from the documents.](./images/fig3.png)
+# Conclusions
 
-4. **Loading Documents into ChromaDB**: The preprocessed articles, along with their embeddings, are loaded into ChromaDB, a database optimized for similarity searches. This step involves leveraging the Chroma integration within the `langchain` library.
-![The notebook cell that stores documents in the vector db.](./images/fig4.png)
-
-5. **User Query and Similarity Search**: The notebook prompts the user to input a question. It then performs a similarity search on the loaded documents in ChromaDB to retrieve relevant articles based on the user's query. This search is based on the similarity of article embeddings to the query.
-
-6. **Compression and Summarization**: After retrieving relevant documents, the notebook compresses and summarizes them using the `ContextualCompressionRetriever` and `load_summarization_chain` functions. This step involves leveraging models such as IBM Granite within the Langchain framework to generate concise summaries related to the user's query.
-![The notebook cell that extract and compress responses.](./images/fig6.png)
-
-7. **Generating Response**: Finally, the notebook sets up a summarization chain and invokes it with the compressed documents and a prompt. The generated response is then printed, providing an answer to the user query based on the summarized content.
-![The notebook cell that generates the response.](./images/fig7.png)
-
-Overall, this notebook demonstrates how various natural language processing techniques and models can be integrated to create a robust pipeline for retrieving, summarizing, and responding to news articles based on user queries.
+In this brief article we outlined how to easily implement a filter able to detect and trasform potentially harmful language in our RAG knowledge base leveraging the open-source IBM Granite Guardian model. As demostrated by the execution of this simple code, such model can be easily deployed on consumer grade hardware reducing the costs potentially associated with the use of larger, generalistic LLMs, allowing for a more efficient use of resources and freeing up space for the use of larger model to address different tasks (such as the re-phrasing of the identified harmful content). Furthermore, the implementation of the re-phrainsing mechanism for the identified HAP content overcomes the issues potentially raised by a complete removal of the information carried by the harmful content.
