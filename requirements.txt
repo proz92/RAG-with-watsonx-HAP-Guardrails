@@ -1,6 +1,15 @@
+ibm_watsonx_ai
+ibm_watson_machine_learning
+nltk
+nltk.tokenize
+dotenv
 unstructured
 langchain==0.1.12
 langchain_community==0.0.28
-chromadb
 langchain-ibm==0.1.4
+langchain-chroma
+chromadb
 sqlalchemy
+torch
+transformers
+genai
